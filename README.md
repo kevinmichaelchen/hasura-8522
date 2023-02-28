@@ -4,7 +4,7 @@ Minimalist reproduction of
 We have a one-to-one relationship between a `person` and their (postal)
 `address`.
 
-Doing a nested insert fails.
+Doing an idempotent nested insert fails.
 
 ## Getting started
 
