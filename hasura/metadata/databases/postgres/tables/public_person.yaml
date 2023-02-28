@@ -1,0 +1,13 @@
+table:
+  name: person
+  schema: public
+object_relationships:
+  - name: address
+    using:
+      manual_configuration:
+        column_mapping:
+          id: person_id
+        insertion_order: null
+        remote_table:
+          name: address
+          schema: public

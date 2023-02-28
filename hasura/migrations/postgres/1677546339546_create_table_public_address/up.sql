@@ -1,0 +1,2 @@
+CREATE TABLE "public"."address" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "person_id" uuid NOT NULL, "region_code" text NOT NULL, "postal_code" text, "administrative_area" text, "locality" text, "sublocality" text, "address_lines" jsonb, PRIMARY KEY ("id") , FOREIGN KEY ("person_id") REFERENCES "public"."person"("id") ON UPDATE no action ON DELETE cascade);
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
