@@ -2,25 +2,27 @@ Minimalist reproduction of
 [Hasura Issue 8522](https://github.com/hasura/graphql-engine/issues/8522).
 
 We have a one-to-one relationship between a `person` and their (postal)
-`address`. 
+`address`.
 
 Doing a nested insert fails.
 
 ## Getting started
 
 Spin up the Docker containers with:
+
 ```
 make start
 ```
 
 In another tab, launch the Console UI with:
+
 ```
 make console
 ```
 
 ## The Mutation
 
-In the GraphiQL playground, run the following mutation, which attempts to do a 
+In the GraphiQL playground, run the following mutation, which attempts to do a
 nested insert, first creating the **Person**, followed by their postal
 **Address**.
 
@@ -82,7 +84,53 @@ determined"
 }
 ```
 
-## Workaround
+## Workarounds
+
+### Workaround 1: Remove the ID
 
 If we remove the idempotency key, and let the database generate the primary key,
 the error goes away.
+
+### Workaround 2: Flatten the inserts
+
+Instead of doing a nested insert, we can do a flat insert and still preserve
+atomicity:
+
+```graphql
+mutation CreatePersonAndAddress {
+  people: insertPerson(
+    objects: [
+      {
+        id: "85e76ace-17d8-4134-ba4f-67c86ba5c7bc"
+        name: "John Doe"
+      }
+    ]
+    onConflict: {
+      constraint: person_pkey
+      update_columns: [id]
+    }
+  ) {
+    returning {
+      id
+      name
+    }
+  }
+  
+  addrs: insertAddress(
+    objects: [
+      {
+        regionCode: "US"
+        personId: "85e76ace-17d8-4134-ba4f-67c86ba5c7bc"
+      }
+    ]
+    onConflict: {
+      constraint: address_pkey
+      update_columns: [id]
+    }
+  ) {
+    returning {
+      regionCode
+    }
+  }
+}
+```
