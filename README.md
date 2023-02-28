@@ -24,6 +24,11 @@ In the GraphiQL playground, run the following mutation, which attempts to do a
 nested insert, first creating the **Person**, followed by their postal
 **Address**.
 
+The client provides the Person's ID as an
+[idempotency key](https://en.wikipedia.org/wiki/Idempotence).
+This allows clients to safely retry requests without accidentally performing the
+same operation twice.
+
 ```graphql
 mutation CreatePersonWithAddress {
   insertPerson(
@@ -76,3 +81,8 @@ determined"
   ]
 }
 ```
+
+## Workaround
+
+If we remove the idempotency key, and let the database generate the primary key,
+the error goes away.
