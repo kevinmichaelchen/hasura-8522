@@ -7,7 +7,7 @@ object_relationships:
       manual_configuration:
         column_mapping:
           id: person_id
-        insertion_order: null
+        insertion_order: after_parent
         remote_table:
           name: address
           schema: public
